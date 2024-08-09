@@ -2,8 +2,10 @@ using Boilerplate.Api.Common;
 using Boilerplate.Api.Configurations;
 using Boilerplate.Api.Endpoints;
 using Boilerplate.Infrastructure;
+using Boilerplate.Infrastructure.Email;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,6 +28,11 @@ builder.Services.AddPersistenceSetup(builder.Configuration);
 // Application layer setup
 builder.Services.AddApplicationSetup();
 
+// Email sender
+if (builder.Configuration.GetValue<bool>("EmailSettings:UseFakeClient"))
+    builder.Services.AddTransient<IEmailSender, FakeEmailSender>();
+else builder.Services.AddTransient<IEmailSender, EmailSender>();
+
 // Add identity stuff
 builder.Services
     .AddIdentityApiEndpoints<ApplicationUser>()
@@ -34,7 +41,7 @@ builder.Services
 // Request response compression
 builder.Services.AddCompressionSetup();
 
-// HttpContextAcessor
+// HttpContextAccessor
 builder.Services.AddHttpContextAccessor();
 
 // Mediator
@@ -77,8 +84,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapHeroEndpoints();
-app.MapGroup("api/identity")
-    .WithTags("Identity")
+app.MapGroup("api/auth")
+    .WithTags("Auth")
     .MapIdentityApi<ApplicationUser>();
 
 await app.RunAsync();

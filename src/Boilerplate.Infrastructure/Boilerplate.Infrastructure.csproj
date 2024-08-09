@@ -8,8 +8,11 @@
 
     <ItemGroup>
         <PackageReference Include="EntityFrameworkCore.Exceptions.PostgreSQL"/>
+        <PackageReference Include="MailKit" />
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore"/>
+        <PackageReference Include="Microsoft.AspNetCore.Identity.UI" />
         <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions"/>
+        <PackageReference Include="MimeKit" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL"/>
     </ItemGroup>
 
