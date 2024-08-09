@@ -16,7 +16,7 @@ public sealed class ExceptionHandler(ILogger<ExceptionHandler> logger) : IExcept
         CancellationToken cancellationToken)
     {
         Exception ex = exception.Demystify();
-        logger.LogError(ex, "An error ocurred: {Message}", ex.Message);
+        logger.LogError(ex, "An error occurred: {Message}", ex.Message);
         httpContext.Response.ContentType = "application/json";
         httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
         Result? result = Result.Error(exception.ToStringDemystified());

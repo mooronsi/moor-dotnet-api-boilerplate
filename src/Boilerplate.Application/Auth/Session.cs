@@ -11,13 +11,9 @@ public class Session : ISession
     public Session(IHttpContextAccessor httpContextAccessor)
     {
         ClaimsPrincipal? user = httpContextAccessor.HttpContext?.User;
-
         Claim? nameIdentifier = user?.FindFirst(ClaimTypes.NameIdentifier);
-
         if (nameIdentifier != null)
-        {
             UserId = new Guid(nameIdentifier.Value);
-        }
     }
 
     public UserId UserId { get; }

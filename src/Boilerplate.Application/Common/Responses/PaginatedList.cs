@@ -11,8 +11,8 @@ public record PaginatedList<T>
     public PaginatedList()
     {
     }
-    
-    public PaginatedList(List<T> items, int count, int currentPage, int pageSize)
+
+    public PaginatedList(IEnumerable<T> items, int count, int currentPage, int pageSize)
     {
         CurrentPage = currentPage;
         TotalPages = (int)Math.Ceiling(count / (double)pageSize);
@@ -29,8 +29,8 @@ public record PaginatedList<T>
 
 public static class PaginatedListHelper
 {
-    public const int DefaultPageSize = 15;
-    public const int DefaultCurrentPage = 1;
+    private const int DefaultPageSize = 15;
+    private const int DefaultCurrentPage = 1;
 
     public static async Task<PaginatedList<T>> ToPaginatedListAsync<T>(this IQueryable<T> source, int currentPage,
         int pageSize)

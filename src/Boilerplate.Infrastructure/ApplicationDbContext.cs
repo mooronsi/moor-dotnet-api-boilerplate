@@ -7,10 +7,9 @@ using System;
 
 namespace Boilerplate.Infrastructure;
 
-public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>, IContext
+public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+    : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>(options), IContext
 {
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
-
     public DbSet<Hero> Heroes { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder builder)

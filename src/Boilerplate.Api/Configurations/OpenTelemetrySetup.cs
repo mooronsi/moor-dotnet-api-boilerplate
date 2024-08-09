@@ -14,7 +14,6 @@ public static class OpenTelemetrySetup
     {
         Activity.DefaultIdFormat = ActivityIdFormat.W3C;
 
-
         builder.Services
             .AddOpenTelemetry()
             .ConfigureResource(rb => rb

@@ -13,7 +13,6 @@ public static class MediatRSetup
             config.AddOpenBehavior(typeof(ValidationResultPipelineBehavior<,>));
         });
 
-
         return services;
     }
 }
