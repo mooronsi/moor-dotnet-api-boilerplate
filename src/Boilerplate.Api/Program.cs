@@ -18,7 +18,7 @@ builder.AddValidationSetup();
 builder.Services.AddAuthorization();
 
 // Swagger
-builder.Services.AddSwaggerSetup();
+builder.Services.AddSwaggerSetup(builder.Configuration);
 
 // Persistence
 builder.Services.AddPersistenceSetup(builder.Configuration);

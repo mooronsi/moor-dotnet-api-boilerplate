@@ -1,5 +1,6 @@
 ﻿using Boilerplate.Domain.Entities.Common;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
@@ -14,23 +15,52 @@ namespace Boilerplate.Api.Configurations;
 
 public static class SwaggerSetup
 {
-    public static IServiceCollection AddSwaggerSetup(this IServiceCollection services)
+    private record SwaggerSettingsContact
+    {
+        public string Name { get; init; } = string.Empty;
+        public string Email { get; init; } = string.Empty;
+        public string Url { get; init; } = string.Empty;
+    }
+
+    private record SwaggerSettingsLicense
+    {
+        public string Name { get; init; } = string.Empty;
+        public string Url { get; init; } = string.Empty;
+    }
+
+    private record SwaggerSettings
+    {
+        public SwaggerSettingsContact? Contact { get; init; }
+        public SwaggerSettingsLicense? License { get; init; }
+    }
+
+    public static IServiceCollection AddSwaggerSetup(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(c =>
         {
+            SwaggerSettings swaggerSettings = configuration.GetSection("Swagger").Get<SwaggerSettings>()
+                                              ?? new SwaggerSettings();
             c.SwaggerDoc("v1",
                 new OpenApiInfo
                 {
                     Title = "Boilerplate.Api",
                     Version = "v1",
                     Description = "API Boilerplate",
-                    Contact = new OpenApiContact { Name = "mooronsi", Url = new Uri("https://github.com/mooronsi") },
+                    Contact = new OpenApiContact
+                    {
+                        Name = swaggerSettings.Contact?.Name,
+                        Email = swaggerSettings.Contact?.Email,
+                        Url = string.IsNullOrWhiteSpace(swaggerSettings.Contact?.Url)
+                            ? null
+                            : new Uri(swaggerSettings.Contact.Url)
+                    },
                     License = new OpenApiLicense
                     {
-                        Name = "MIT",
-                        Url = new Uri(
-                            "https://github.com/mooronsi/moor-dotnet-api-boilerplate/blob/main/LICENSE")
+                        Name = swaggerSettings.License?.Name,
+                        Url = string.IsNullOrWhiteSpace(swaggerSettings.License?.Url)
+                            ? null
+                            : new Uri(swaggerSettings.License.Url)
                     }
                 });
             c.DescribeAllParametersInCamelCase();
