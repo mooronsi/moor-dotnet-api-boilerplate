@@ -69,8 +69,8 @@ jobs:
         if: always()
         uses: appleboy/telegram-action@master
         with:
-          to: ${{ secrets.TELEGRAM_TO }}
-          token: ${{ secrets.TELEGRAM_TOKEN }}
+          to: ${{ secrets.BOILERPLATE_TELEGRAM_TO }}
+          token: ${{ secrets.BOILERPLATE_TELEGRAM_TOKEN }}
           message: |
             ${{ github.actor }} created commit:
             Commit message: ${{ github.event.commits[0].message }}
