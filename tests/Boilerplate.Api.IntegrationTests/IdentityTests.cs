@@ -19,7 +19,7 @@ public class IdentityTests(CustomWebApplicationFactory apiFactory) : BaseTest(ap
         RegisterRequest request = new() { Email = Email, Password = Password };
 
         // act
-        HttpResponseMessage result = await PostAsync("api/Identity/Register", request);
+        HttpResponseMessage result = await PostAsync("api/auth/Register", request);
 
         // assert
         result.Should().BeSuccessful();
@@ -30,10 +30,10 @@ public class IdentityTests(CustomWebApplicationFactory apiFactory) : BaseTest(ap
     {
         // arrange
         RegisterRequest request = new() { Email = Email, Password = Password };
-        await PostAsync("api/Identity/Register", request, true);
+        await PostAsync("api/auth/Register", request, true);
 
         // act
-        HttpResponseMessage result = await PostAsync("api/Identity/Login", request);
+        HttpResponseMessage result = await PostAsync("api/auth/Login", request);
 
         // assert
         result.Should().BeSuccessful();
