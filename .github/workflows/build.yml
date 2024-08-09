@@ -19,6 +19,8 @@ env:
   GITHUB_TOKEN: ${{ secrets.BOILERPLATE_GITHUB_TOKEN }}  # Needed to get PR information, if any
   SONAR_TOKEN: ${{ secrets.BOILERPLATE_SONAR_TOKEN }}
   SONAR_DOTNET_ENABLE_CONCURRENT_EXECUTION: true
+  TELEGRAM_TO: ${{ secrets.BOILERPLATE_TELEGRAM_TO }}
+  TELEGRAM_TOKEN: ${{ secrets.BOILERPLATE_TELEGRAM_TOKEN }}
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -65,6 +67,18 @@ jobs:
           dotnet-coverage collect 'dotnet test WebApiBoilerplate.sln' -f xml  -o 'coverage.xml'
           dotnet sonarscanner end /d:sonar.token="$SONAR_TOKEN"
 
+      - name: Prepare notification message
+        id: prepare-notification
+        if: always()
+        run: |
+          if [ "${{ github.event_name }}" == "push" ]; then
+            echo "EVENT_TYPE=Push to main" >> $GITHUB_ENV
+            echo "COMMIT_MESSAGE=${{ github.event.head_commit.message }}" >> $GITHUB_ENV
+          else
+            echo "EVENT_TYPE=Pull Request" >> $GITHUB_ENV
+            echo "COMMIT_MESSAGE=${{ github.event.pull_request.title }}" >> $GITHUB_ENV
+          fi
+
       - name: Send a notification to Telegram
         if: always()
         uses: appleboy/telegram-action@master
@@ -72,8 +86,9 @@ jobs:
           to: ${{ secrets.BOILERPLATE_TELEGRAM_TO }}
           token: ${{ secrets.BOILERPLATE_TELEGRAM_TOKEN }}
           message: |
-            ${{ github.actor }} created commit:
-            Commit message: ${{ github.event.commits[0].message }}
+            Event: ${{ env.EVENT_TYPE }}
+            Actor: ${{ github.actor }}
+            Commit message: ${{ env.COMMIT_MESSAGE }}
             Repository: ${{ github.repository }}
             
             Results:
